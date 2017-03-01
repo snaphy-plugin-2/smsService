@@ -31,8 +31,8 @@ module.exports = function(server, databaseObj, helper, packageObj) {
         }
         
 
-        var apiKey = "a8147ba9";
-        var apiSecret = "14ba38cb";
+        var apiKey = "xxxxx";
+        var apiSecret = "xxxxxxx";
         var data = 'https://rest.nexmo.com' +
             '/sms/json?api_key=' + apiKey + '&api_secret=' + apiSecret +
             '&from=Mapstrack&to=' + number +
@@ -60,5 +60,5 @@ module.exports = function(server, databaseObj, helper, packageObj) {
     return {
         init: init,
         send: send
-    }
+    };
 }; //module.exports
