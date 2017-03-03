@@ -14,10 +14,7 @@ module.exports = function(server, databaseObj, helper, packageObj) {
      * It is a constructor and is populated once the server starts.
      * @return {[type]} [description]
      */
-    var init = function() {
-
-
-    };
+    var init = function() {};
 
 
     var send = function(message, number, callback) {
