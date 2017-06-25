@@ -27,29 +27,71 @@ module.exports = function(server, databaseObj, helper, packageObj) {
             number = "+91" + number;
         }
         
+        if(packageObj.provider){
+            if(packageObj.provider.active){
+                if(packageObj.provider.settings[packageObj.provider.active]){
+                    const settings = packageObj.provider.settings[packageObj.provider.active];
+                    if(packageObj.provider.active === "msg91"){
+                        const url = "https://control.msg91.com/api/sendhttp.php?" +
+                            "authkey=" + settings.authKey + "&" +
+                            "mobiles=" + number + "&" +
+                            "message=" + message + "&" +
+                            "sender=" + settings.sender + "&" +
+                            "route=" + settings.route +"&" +
+                            "country="+ settings.country;
 
-        var apiKey = "xxxxx";
-        var apiSecret = "xxxxxxx";
-        var data = 'https://rest.nexmo.com' +
-            '/sms/json?api_key=' + apiKey + '&api_secret=' + apiSecret +
-            '&from=Mapstrack&to=' + number +
-            '&text=' + message;
-        https.get(
-            data,
-            function(res) {
-                res.on('data', function(data) {
-                    // all done! handle the data as you need to
-                    console.log("Message sent");
-                    //console.log(data);
-                    callback(null, data);
-                });
+                            https.get(
+                                url,
+                                function(res) {
+                                    res.on('data', function(data) {
+                                        // all done! handle the data as you need to
+                                        console.log("Message sent");
+                                        //console.log(data);
+                                        callback(null, data);
+                                    });
+                                }
+                            ).on('error', function(err) {
+                                console.log("Error sending push message to the server.");
+                                //console.error(err);
+                                // handle errors somewhow
+                                callback(err, null);
+                            });
+                    }else if(packageObj.provider.active === "nexmo"){
+                        const apiKey = "xxxxx";
+                        const apiSecret = "xxxxxxx";
+                        const url = 'https://rest.nexmo.com' +
+                            '/sms/json?api_key=' + apiKey + '&api_secret=' + apiSecret +
+                            '&from=Mapstrack&to=' + number +
+                            '&text=' + message;
+
+                        https.get(
+                            url,
+                            function(res) {
+                                res.on('data', function(data) {
+                                    // all done! handle the data as you need to
+                                    console.log("Message sent");
+                                    //console.log(data);
+                                    callback(null, data);
+                                });
+                            }
+                        ).on('error', function(err) {
+                            console.log("Error sending push message to the server.");
+                            //console.error(err);
+                            // handle errors somehow
+                            callback(err);
+                        });
+                    }else{
+                        callback(new Error("SMS Provider not found in conf.json"));
+                    }
+                }else{
+                    callback(new Error("SMS Provider not defined in conf.json"));
+                }
+            }else{
+                callback(new Error("SMS No Active Provider Given In Settings"));
             }
-        ).on('error', function(err) {
-            console.log("Error sending push message to the server.");
-            //console.error(err);
-            // handle errors somewhow
-            callback(err, null);
-        });
+        }else{
+            callback(new Error("SMS Provider not defined in conf.json"));
+        }
     };
 
 
