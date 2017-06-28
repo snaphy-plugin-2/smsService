@@ -47,14 +47,20 @@ module.exports = function(server, databaseObj, helper, packageObj) {
                                         // all done! handle the data as you need to
                                         console.log("Message sent");
                                         //console.log(data);
-                                        callback(null, data);
+                                        if(callback){
+                                            callback(null, data);
+                                        }
+
                                     });
                                 }
                             ).on('error', function(err) {
                                 console.log("Error sending push message to the server.");
                                 //console.error(err);
                                 // handle errors somewhow
-                                callback(err, null);
+                                if(callback){
+                                    callback(err, null);
+                                }
+
                             });
                     }else if(packageObj.provider.active === "nexmo"){
                         const apiKey = "xxxxx";
@@ -71,26 +77,38 @@ module.exports = function(server, databaseObj, helper, packageObj) {
                                     // all done! handle the data as you need to
                                     console.log("Message sent");
                                     //console.log(data);
-                                    callback(null, data);
+                                    if(callback) {
+                                        callback(null, data);
+                                    }
                                 });
                             }
                         ).on('error', function(err) {
                             console.log("Error sending push message to the server.");
                             //console.error(err);
                             // handle errors somehow
-                            callback(err);
+                            if(callback) {
+                                callback(err);
+                            }
                         });
                     }else{
-                        callback(new Error("SMS Provider not found in conf.json"));
+                        if(callback) {
+                            callback(new Error("SMS Provider not found in conf.json"));
+                        }
                     }
                 }else{
-                    callback(new Error("SMS Provider not defined in conf.json"));
+                    if(callback) {
+                        callback(new Error("SMS Provider not defined in conf.json"));
+                    }
                 }
             }else{
-                callback(new Error("SMS No Active Provider Given In Settings"));
+                if(callback) {
+                    callback(new Error("SMS No Active Provider Given In Settings"));
+                }
             }
         }else{
-            callback(new Error("SMS Provider not defined in conf.json"));
+            if(callback) {
+                callback(new Error("SMS Provider not defined in conf.json"));
+            }
         }
     };
 
