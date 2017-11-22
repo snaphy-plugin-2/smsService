@@ -1,6 +1,7 @@
 'use strict';
 module.exports = function(server, databaseObj, helper, packageObj) {
     var https = require("https");
+    const SendOtp = require('sendotp');
     /**
      * Here server is the main app object
      * databaseObj is the mapped database from the package.json file
@@ -15,6 +16,55 @@ module.exports = function(server, databaseObj, helper, packageObj) {
      * @return {[type]} [description]
      */
     var init = function() {};
+
+
+    /**
+     * Send OTP Route SMS from MSG91
+     * Note: This method will only work for MSG91 Service Provider.
+     * @param message
+     * @param number
+     * @param callback
+     */
+    var sendOTPRouteSMS = function (message, number, callback) {
+        //matching the number..
+        var patt = /\+\d{12,12}/;
+        //remove 0 from the number
+        number = number.replace(/^0/, "");
+        var match = number.match(patt);
+        if (!match) {
+            number = "+91" + number;
+        }
+
+        if(!message){
+            return callback(new Error("Message is required"));
+        }
+
+
+        if(packageObj.provider) {
+            if (packageObj.provider.active) {
+                if (packageObj.provider.settings[packageObj.provider.active]) {
+                    const setting = packageObj.provider.settings[packageObj.provider.active];
+                    const sendOTP = new SendOtp(setting.authKey, message);
+                    sendOTP.send(number, setting.sender, function (error, data, response) {
+                        if(error){
+                            console.error(error);
+                            callback(error);
+                        }else{
+                            callback(null, {
+                                status: "Success"
+                            });
+                        }
+                    });
+                }else{
+                    callback(new Error("Settings not provided"));
+                }
+            }else{
+                callback(new Error("Settings not active"));
+            }
+        }else{
+            callback(new Error("Setting is required"));
+        }
+    };
 
 
     var send = function(message, number, callback) {
@@ -116,6 +166,7 @@ module.exports = function(server, databaseObj, helper, packageObj) {
     //return all the methods that you wish to provide user to extend this plugin.
     return {
         init: init,
-        send: send
+        send: send,
+        sendOTPRouteSMS: sendOTPRouteSMS
     };
 }; //module.exports

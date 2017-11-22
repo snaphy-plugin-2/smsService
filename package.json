@@ -7,7 +7,8 @@
   "authorEmail": "robinskumar73@gmail.com",
   "pluginDepedencies": {},
   "dependencies": {
-    "https": "^1.0.0"
+    "https": "^1.0.0",
+    "sendotp": "^1.2.6"
   },
   "optionalDependencies": {},
   "repository": {
