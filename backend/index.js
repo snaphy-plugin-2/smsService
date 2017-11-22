@@ -63,11 +63,13 @@ module.exports = function(server, databaseObj, helper, packageObj) {
 
                             });
                     }else if(packageObj.provider.active === "nexmo"){
-                        const apiKey = "xxxxx";
-                        const apiSecret = "xxxxxxx";
+                        const settings = packageObj.provider.settings[packageObj.provider.active];
+                        const apiKey = settings.apiKey;
+                        const apiSecret = settings.apiSecret;
+                        const from = settings.from;
                         const url = 'https://rest.nexmo.com' +
                             '/sms/json?api_key=' + apiKey + '&api_secret=' + apiSecret +
-                            '&from=Mapstrack&to=' + number +
+                            '&from='+ from +'&to=' + number +
                             '&text=' + message;
 
                         https.get(
