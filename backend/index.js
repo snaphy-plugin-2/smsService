@@ -23,9 +23,10 @@ module.exports = function(server, databaseObj, helper, packageObj) {
      * Note: This method will only work for MSG91 Service Provider.
      * @param message
      * @param number
+     * @param otp
      * @param callback
      */
-    var sendOTPRouteSMS = function (message, number, callback) {
+    var sendOTPRouteSMS = function (message, number, otp, callback) {
         //matching the number..
         var patt = /\+\d{12,12}/;
         //remove 0 from the number
@@ -45,7 +46,8 @@ module.exports = function(server, databaseObj, helper, packageObj) {
                 if (packageObj.provider.settings[packageObj.provider.active]) {
                     const setting = packageObj.provider.settings[packageObj.provider.active];
                     const sendOTP = new SendOtp(setting.authKey, message);
-                    sendOTP.send(number, setting.sender, function (error, data, response) {
+                    //sendOtp.setOtpExpiry('1440'); //in 24 hour minutes
+                    sendOTP.send(number, setting.sender, otp.toString(), function (error, data, response) {
                         if(error){
                             console.error(error);
                             callback(error);
