@@ -1,6 +1,6 @@
 'use strict';
-module.exports = function(server, databaseObj, helper, packageObj) {
-    var https = require("https");
+module.exports    = function(server, databaseObj, helper, packageObj) {
+    var https     = require("https");
     const SendOtp = require('sendotp');
     /**
      * Here server is the main app object
@@ -28,10 +28,10 @@ module.exports = function(server, databaseObj, helper, packageObj) {
      */
     var sendOTPRouteSMS = function (message, number, otp, callback) {
         //matching the number..
-        var patt = /\+\d{12,12}/;
+        var patt   = /\+\d{12,12}/;
         //remove 0 from the number
-        number = number.replace(/^0/, "");
-        var match = number.match(patt);
+        number     = number.replace(/^0/, "");
+        var match  = number.match(patt);
         if (!match) {
             number = "+91" + number;
         }
